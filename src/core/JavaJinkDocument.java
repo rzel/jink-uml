@@ -56,4 +56,9 @@ public class JavaJinkDocument extends JinkDocument {
 		return new JavaModelRenderer(root);
 	}
 
+	@Override
+	public int getTypeID() {
+		return 1;
+	}
+
 }

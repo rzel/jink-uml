@@ -46,6 +46,7 @@ public class MainDrawnArea extends JComponent {
 		this.addMouseMotionListener(adapter);
 		this.addMouseWheelListener(adapter);
 		this.addKeyListener(keyAdapter);
+		startScrollThread();
 	}
 
 	@Override
@@ -201,10 +202,15 @@ public class MainDrawnArea extends JComponent {
 			mouseY = y;
 			int button = e.getButton();
 			if (button == 1) {
-				if (clickedDragger == false)
+				if (e.getClickCount() == 2) {
 					selected = controller.getModel().getNodeAt(x, y);
-				if (selected != null && !clickedDragger)
-					drawingArrow = true;
+					controller.activate(selected);
+				} else {
+					if (clickedDragger == false)
+						selected = controller.getModel().getNodeAt(x, y);
+					if (selected != null && !clickedDragger)
+						drawingArrow = true;
+				}
 			} else if (button == 3) {
 				if (dragging == null) {
 					selected = controller.getModel().getNodeAt(x, y);
@@ -273,14 +279,10 @@ public class MainDrawnArea extends JComponent {
 			if (mouseDown)
 				return;
 			double t = e.getWheelRotation();
-			int ox = e.getX();
-			int oy = e.getY();
-			int x = e.getX();
-			int y = e.getY();
-			// if (t > 0) {
-			// ox = getWidth() - x;
-			// oy = getHeight() - y;
-			// }
+			int ox = getWidth() / 2;
+			int oy = getHeight() / 2;
+			int x = ox;
+			int y = oy;
 			x /= zoom;
 			y /= zoom;
 			x += panX;
@@ -349,6 +351,35 @@ public class MainDrawnArea extends JComponent {
 
 	};
 
+	private void startScrollThread() {
+		Thread t = new Thread(new Runnable() {
+			public void run() {
+				while (true) {
+					if (codes[KeyEvent.VK_LEFT] || codes[KeyEvent.VK_A]) {
+						panX -= GRID_SIZE;
+						repaint();
+					} else if (codes[KeyEvent.VK_RIGHT] || codes[KeyEvent.VK_D]) {
+						panX += GRID_SIZE;
+						repaint();
+					}
+					if (codes[KeyEvent.VK_UP] || codes[KeyEvent.VK_W]) {
+						panY -= GRID_SIZE;
+						repaint();
+					} else if (codes[KeyEvent.VK_DOWN] || codes[KeyEvent.VK_S]) {
+						panY += GRID_SIZE;
+						repaint();
+					}
+					try {
+						Thread.sleep(30);
+					} catch (InterruptedException e) {
+					}
+				}
+			}
+		});
+		t.setDaemon(true);
+		t.start();
+	}
+
 	private final Rectangle r = new Rectangle();
 
 	private boolean clickedDragger(int mx, int my) {
@@ -372,6 +403,11 @@ public class MainDrawnArea extends JComponent {
 
 	public void setAlignGrid(boolean b) {
 		snapToGrid = b;
+	}
+
+	public void clearSelection() {
+		selected = null;
+		repaint();
 	}
 
 }

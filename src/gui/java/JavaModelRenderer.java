@@ -93,18 +93,4 @@ public class JavaModelRenderer extends ModelRenderer {
 		}
 	}
 
-	private String getCutOffString(Graphics2D g, String s, int w, FontMetrics fm) {
-		String dotDot = "..";
-		int ddSize = fm.stringWidth(dotDot);
-		StringBuilder sb = new StringBuilder(dotDot);
-		for (int i = 0; i < s.length(); i++) {
-			char c = s.charAt(i);
-			sb = sb.insert(sb.length() - dotDot.length(), c);
-			if (fm.stringWidth(sb.toString()) + ddSize > w) {
-				return sb.deleteCharAt(sb.length() - dotDot.length() - 1)
-						.toString();
-			}
-		}
-		return sb.substring(0, sb.length() - dotDot.length());
-	}
 }

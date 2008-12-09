@@ -16,9 +16,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import util.JinkFileFilter;
-import core.JavaJinkDocument;
 import core.Jink;
 import core.JinkDocument;
+import core.PlanningDocument;
 import core.io.JinkIO;
 import core.model.node.SceneNode;
 
@@ -56,7 +56,7 @@ public class JinkGUI extends JinkGUI_Beans implements ListSelectionListener {
 	@Override
 	public void newChart() {
 		controller.closeDocument();
-		JinkDocument newDocument = new JavaJinkDocument("Untitled "
+		JinkDocument newDocument = new PlanningDocument("Untitled "
 				+ (++COUNTER), super.stackList, super.nodeInfoHolder);
 		controller.setCurrentDocument(newDocument);
 		BeanUtils.setInner(super.mainAreaContainer, newDocument

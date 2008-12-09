@@ -14,12 +14,13 @@ import util.ByteBuffer;
 import util.ByteReader;
 import core.JavaJinkDocument;
 import core.JinkDocument;
+import core.PlanningDocument;
 import core.model.UMLModel;
 import core.model.node.SceneNode;
 
 public class JinkIO {
 
-	private static final short VERSION_ID = 1;
+	private static final short VERSION_ID = 2;
 
 	public static JinkDocument read(File f, JList stackList,
 			JPanel optionsHolder) throws IOException {
@@ -28,6 +29,7 @@ public class JinkIO {
 		if (ver != VERSION_ID) {
 			throw new RuntimeException("Wrong version. (file = " + ver + ")");
 		}
+		int type = b.read();
 		String title = b.readString();
 		short numPlanes = b.readShort();
 		LinkedHashMap<Integer, UMLModel> idModels = new LinkedHashMap<Integer, UMLModel>();
@@ -52,7 +54,12 @@ public class JinkIO {
 						+ modelID);
 			planes.put(sn, model);
 		}
-		return new JavaJinkDocument(title, stackList, optionsHolder, planes);
+		if (type == 0)
+			return new PlanningDocument(title, stackList, optionsHolder, planes);
+		else if (type == 1)
+			return new JavaJinkDocument(title, stackList, optionsHolder, planes);
+		else
+			throw new RuntimeException("Unknown Doc Type: " + type);
 	}
 
 	private static SceneNode findSceneNode(int id, Iterable<UMLModel> m) {
@@ -80,6 +87,7 @@ public class JinkIO {
 		// first plane to write out is the root
 		HashMap<SceneNode, UMLModel> planes = jd.getPlaneShifts();
 		b.addShort(VERSION_ID); // version
+		b.add(jd.getTypeID());
 		b.addString(jd.getTitle());
 		b.addShort((short) planes.size()); // number of planes
 		for (SceneNode sn : planes.keySet()) {
