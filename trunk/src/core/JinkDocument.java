@@ -103,21 +103,25 @@ public abstract class JinkDocument {
 			public void run() {
 				for (SceneNode sn : planeShifts.keySet()) {
 					if (planeShifts.get(sn) == model) {
-						RecursiveSceneNode rsn = (RecursiveSceneNode) sn;
-						BufferedImage bi = new BufferedImage(300, 300,
-								BufferedImage.TYPE_INT_RGB);
-						Graphics2D g = (Graphics2D) bi.getGraphics();
-						g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-								RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-						g.setColor(new Color(240, 240, 255));
-						g.fillRect(0, 0, bi.getWidth(), bi.getHeight());
-						ModelRenderer mr = getModelRenderer();
-						mr.setShowGrid(false);
-						mr.setModel(model);
-						mr.render(g, .2, 0, 0, 0, 0);
-						g.dispose();
-						rsn.setGlimpse(bi);
-						renderedPanel.repaint();
+						if (sn instanceof RecursiveSceneNode) {
+							RecursiveSceneNode rsn = (RecursiveSceneNode) sn;
+							BufferedImage bi = new BufferedImage(300, 300,
+									BufferedImage.TYPE_INT_RGB);
+							Graphics2D g = (Graphics2D) bi.getGraphics();
+							g
+									.setRenderingHint(
+											RenderingHints.KEY_INTERPOLATION,
+											RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+							g.setColor(new Color(240, 240, 255));
+							g.fillRect(0, 0, bi.getWidth(), bi.getHeight());
+							ModelRenderer mr = getModelRenderer();
+							mr.setShowGrid(false);
+							mr.setModel(model);
+							mr.render(g, .2, 0, 0, 0, 0);
+							g.dispose();
+							rsn.setGlimpse(bi);
+							renderedPanel.repaint();
+						}
 						return;
 					}
 				}
@@ -218,5 +222,14 @@ public abstract class JinkDocument {
 	public void setDirty(boolean b) {
 		hasChange = b;
 	}
+
+	public void activate(SceneNode selected) {
+		if (selected instanceof RecursiveSceneNode) {
+			renderedPanel.clearSelection();
+			zoomInto(selected);
+		}
+	}
+
+	public abstract int getTypeID();
 
 }
