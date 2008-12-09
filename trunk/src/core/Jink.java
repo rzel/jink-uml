@@ -2,6 +2,14 @@ package core;
 
 import gui.JinkGUI;
 
+import java.io.File;
+import java.io.IOException;
+
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+
+import core.io.JinkIO;
+
 public class Jink {
 
 	private final JinkGUI gui;
@@ -29,13 +37,39 @@ public class Jink {
 	public void closeDocument() {
 		if (current == null)
 			return;
-		if (current.hasChange())
-			save(current);
+		if (current.hasChange()) {
+			int i = JOptionPane.showConfirmDialog(gui,
+					"Do you wish to save this document first?", "Save?",
+					JOptionPane.YES_NO_OPTION);
+			if (i == JOptionPane.YES_OPTION)
+				save(current);
+		}
 		current = null;
 	}
 
-	public void save(JinkDocument jinkDocument) {
-
+	public boolean save(JinkDocument jinkDocument) {
+		File f = jinkDocument.getSaveLocation();
+		if (f == null) {
+			JFileChooser jfc = gui.getFileChooser();
+			int ret = jfc.showSaveDialog(gui);
+			if (ret == JOptionPane.CANCEL_OPTION)
+				return false;
+			f = jfc.getSelectedFile();
+			if (f == null)
+				return false;
+			if (f.getName().endsWith(".jink") == false) {
+				f = new File(f.getPath() + ".jink");
+			}
+		}
+		try {
+			JinkIO.write(jinkDocument, f);
+			jinkDocument.setSaveLoc(f);
+			jinkDocument.setDirty(false);
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	public static void main(String[] args) {

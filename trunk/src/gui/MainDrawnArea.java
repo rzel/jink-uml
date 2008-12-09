@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -22,18 +23,20 @@ public class MainDrawnArea extends JComponent {
 			arrow_to_color = new Color(255, 100, 0, 100);
 	private static final int DRAGGER_SIZE = 9;
 	private static final double ZOOM_MIN = .01, ZOOM_MAX = 20;
+	private static final int GRID_SIZE = 20;
 
 	private final JinkDocument controller;
 	private final ModelRenderer renderer;
 	private int offX, offY;
 	private int mouseX, mouseY;
 	private boolean mouseIn = false;
-	boolean mouseDown = false;
-	boolean drawingArrow = false;
+	private boolean mouseDown = false;
+	private boolean drawingArrow = false;
+	private boolean snapToGrid = true;
 	public SceneNode dragging, selected, arrowTo;
 	private int drag_x, drag_y;
 	private double zoom = 1;
-	private double panX = 20;
+	private double panX = 0;
 	private double panY = 0;
 
 	public MainDrawnArea(JinkDocument controller, ModelRenderer renderer) {
@@ -46,8 +49,12 @@ public class MainDrawnArea extends JComponent {
 	}
 
 	@Override
-	protected void paintComponent(Graphics g) {
-		renderer.render(g, getWidth(), getHeight(), zoom, panX, panY);
+	protected void paintComponent(Graphics gg) {
+		Graphics2D g = (Graphics2D) gg;
+		int w = getWidth(), h = getHeight();
+		g.setColor(Color.white);
+		g.fillRect(0, 0, w, h);
+		renderer.render(g, zoom, panX, panY, w, h);
 		if (mouseIn) {
 			if (dragging != null) {
 				g.setColor(shadow);
@@ -107,6 +114,10 @@ public class MainDrawnArea extends JComponent {
 			mouseY /= zoom;
 			mouseX += panX;
 			mouseY += panY;
+			if (snapToGrid) {
+				mouseX = mouseX / GRID_SIZE * GRID_SIZE;
+				mouseY = mouseY / GRID_SIZE * GRID_SIZE;
+			}
 			if (dragging != null) {
 				dragging.setLocation(mouseX - dragging.getWidth() / 2 + offX,
 						mouseY - dragging.getHeight() / 2 + offY);
@@ -116,6 +127,8 @@ public class MainDrawnArea extends JComponent {
 					if (selected == arrowTo)
 						arrowTo = null;
 				} else {
+					mouseX += GRID_SIZE / 2;
+					mouseY += GRID_SIZE / 2;
 					if (drag_x != 0) {
 						int new_width;
 						if (drag_x < 0) {
@@ -126,7 +139,6 @@ public class MainDrawnArea extends JComponent {
 									.getY());
 						} else
 							new_width = Math.max(1, mouseX - selected.getX());
-
 						selected.setSize(new_width, selected.getHeight());
 						// renderer.dirty(selected);
 					}
@@ -157,6 +169,10 @@ public class MainDrawnArea extends JComponent {
 			mouseY /= zoom;
 			mouseX += panX;
 			mouseY += panY;
+			if (snapToGrid) {
+				mouseX = mouseX / GRID_SIZE * GRID_SIZE;
+				mouseY = mouseY / GRID_SIZE * GRID_SIZE;
+			}
 			if (dragging != null) {
 				dragging.setLocation(mouseX - dragging.getWidth() / 2 + offX,
 						mouseY - dragging.getHeight() / 2 + offY);
@@ -166,6 +182,7 @@ public class MainDrawnArea extends JComponent {
 
 		@Override
 		public void mousePressed(MouseEvent e) {
+			controller.setDirty(true);
 			mouseDown = true;
 			if (hasFocus() == false)
 				requestFocusInWindow();
@@ -175,12 +192,15 @@ public class MainDrawnArea extends JComponent {
 			y /= zoom;
 			x += panX;
 			y += panY;
+			boolean clickedDragger = selected != null && clickedDragger(x, y);
+			if (snapToGrid) {
+				x = x / GRID_SIZE * GRID_SIZE;
+				y = y / GRID_SIZE * GRID_SIZE;
+			}
 			mouseX = x;
 			mouseY = y;
 			int button = e.getButton();
 			if (button == 1) {
-				boolean clickedDragger = selected != null
-						&& clickedDragger(x, y);
 				if (clickedDragger == false)
 					selected = controller.getModel().getNodeAt(x, y);
 				if (selected != null && !clickedDragger)
@@ -208,6 +228,10 @@ public class MainDrawnArea extends JComponent {
 			y /= zoom;
 			x += panX;
 			y += panY;
+			if (snapToGrid) {
+				x = x / GRID_SIZE * GRID_SIZE;
+				y = y / GRID_SIZE * GRID_SIZE;
+			}
 			drag_x = 0;
 			drag_y = 0;
 			if (dragging != null) {
@@ -248,9 +272,15 @@ public class MainDrawnArea extends JComponent {
 		public void mouseWheelMoved(MouseWheelEvent e) {
 			if (mouseDown)
 				return;
-			int t = e.getWheelRotation();
+			double t = e.getWheelRotation();
+			int ox = e.getX();
+			int oy = e.getY();
 			int x = e.getX();
 			int y = e.getY();
+			// if (t > 0) {
+			// ox = getWidth() - x;
+			// oy = getHeight() - y;
+			// }
 			x /= zoom;
 			y /= zoom;
 			x += panX;
@@ -260,8 +290,10 @@ public class MainDrawnArea extends JComponent {
 				zoom = ZOOM_MIN;
 			if (zoom > ZOOM_MAX)
 				zoom = ZOOM_MAX;
-			panX = x - e.getX() / zoom;
-			panY = y - e.getY() / zoom;
+			panX = x - ox / zoom;
+			panY = y - oy / zoom;
+			panX = panX / GRID_SIZE * GRID_SIZE;
+			panY = panY / GRID_SIZE * GRID_SIZE;
 			if (zoom >= 3 && t < 0) {
 				SceneNode into = controller.getModel().getNodeAt(x, y);
 				if (into != null) {
@@ -336,6 +368,10 @@ public class MainDrawnArea extends JComponent {
 			}
 		}
 		return false;
+	}
+
+	public void setAlignGrid(boolean b) {
+		snapToGrid = b;
 	}
 
 }

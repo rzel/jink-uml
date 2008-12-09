@@ -29,6 +29,8 @@ public abstract class JinkGUI_Beans extends javax.swing.JFrame {
 
 	protected abstract void setAlignGrid(boolean b);
 
+	protected abstract void setShowGlimpse(boolean b);
+
 	protected abstract void showAbout();
 
 	protected abstract DefaultListModel getStackModel();
@@ -62,6 +64,7 @@ public abstract class JinkGUI_Beans extends javax.swing.JFrame {
 		jMenu3 = new javax.swing.JMenu();
 		showGridMenuItem = new javax.swing.JCheckBoxMenuItem();
 		alignGridMenuItem = new javax.swing.JCheckBoxMenuItem();
+		showGlimpseMenuItem = new javax.swing.JCheckBoxMenuItem();
 		jMenu2 = new javax.swing.JMenu();
 		aboutMenuItem = new javax.swing.JMenuItem();
 
@@ -241,6 +244,16 @@ public abstract class JinkGUI_Beans extends javax.swing.JFrame {
 				});
 		jMenu3.add(alignGridMenuItem);
 
+		showGlimpseMenuItem.setSelected(true);
+		showGlimpseMenuItem.setText("Show Glimpses");
+		showGlimpseMenuItem
+				.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						showGlimpseMenuItemActionPerformed(evt);
+					}
+				});
+		jMenu3.add(showGlimpseMenuItem);
+
 		jMenuBar1.add(jMenu3);
 
 		jMenu2.setText("Help");
@@ -300,6 +313,11 @@ public abstract class JinkGUI_Beans extends javax.swing.JFrame {
 		showAbout();
 	}
 
+	private void showGlimpseMenuItemActionPerformed(
+			java.awt.event.ActionEvent evt) {
+		setShowGlimpse(showGlimpseMenuItem.isSelected());
+	}
+
 	// Variables declaration - do not modify
 	protected javax.swing.JMenuItem aboutMenuItem;
 	protected javax.swing.JCheckBoxMenuItem alignGridMenuItem;
@@ -319,6 +337,7 @@ public abstract class JinkGUI_Beans extends javax.swing.JFrame {
 	protected javax.swing.JPanel nodeInfoHolder;
 	protected javax.swing.JMenuItem openMenuItem;
 	protected javax.swing.JMenuItem saveMenuItem;
+	protected javax.swing.JCheckBoxMenuItem showGlimpseMenuItem;
 	protected javax.swing.JCheckBoxMenuItem showGridMenuItem;
 	protected javax.swing.JPanel sideBarContainer;
 	protected javax.swing.JList stackList;
