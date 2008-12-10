@@ -5,7 +5,9 @@ import gui.planning.LinkOptions;
 import gui.planning.PlanningModelRenderer;
 
 import java.awt.Desktop;
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.LinkedHashMap;
 
 import javax.swing.JList;
@@ -57,7 +59,9 @@ public class PlanningDocument extends JinkDocument {
 			Desktop d = Desktop.getDesktop();
 			try {
 				d.browse(new URI(link.getURL()));
-			} catch (Exception e) {
+			} catch (URISyntaxException e) {
+				System.err.println("Invalid URL: " + link.getURL());
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		} else {

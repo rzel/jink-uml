@@ -72,7 +72,7 @@ public class ModelRenderer {
 		for (SceneNode from : graph.keySet()) {
 			HashSet<SceneNode> toSet = graph.get(from);
 			for (SceneNode to : toSet) {
-				connectionRenderer.render(g, from, to);
+				connectionRenderer.render(g, from, to, true);
 			}
 		}
 	}

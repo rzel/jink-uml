@@ -211,6 +211,10 @@ public class MainDrawnArea extends JComponent {
 					if (selected != null && !clickedDragger)
 						drawingArrow = true;
 				}
+			} else if (button == 2) {
+				selected = controller.getModel().getNodeAt(x, y);
+				if (selected != null)
+					controller.getModel().removeLinksFrom(selected);
 			} else if (button == 3) {
 				if (dragging == null) {
 					selected = controller.getModel().getNodeAt(x, y);
@@ -410,4 +414,9 @@ public class MainDrawnArea extends JComponent {
 		repaint();
 	}
 
+	public void centerOn(Rectangle bounds) {
+		panX = bounds.x - GRID_SIZE;
+		panY = bounds.y - GRID_SIZE;
+		repaint();
+	}
 }

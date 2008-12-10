@@ -285,14 +285,14 @@ public abstract class ClassOptions_Beans extends javax.swing.JPanel {
 																		.addComponent(
 																				abstractCombo,
 																				javax.swing.GroupLayout.PREFERRED_SIZE,
-																				javax.swing.GroupLayout.DEFAULT_SIZE,
+																				67,
 																				javax.swing.GroupLayout.PREFERRED_SIZE)
 																		.addPreferredGap(
 																				javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 																		.addComponent(
 																				classField,
 																				javax.swing.GroupLayout.DEFAULT_SIZE,
-																				78,
+																				102,
 																				Short.MAX_VALUE))
 														.addGroup(
 																layout

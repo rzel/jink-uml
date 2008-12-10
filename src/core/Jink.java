@@ -8,6 +8,7 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import util.Settings;
 import core.io.JinkIO;
 
 public class Jink {
@@ -65,6 +66,7 @@ public class Jink {
 			JinkIO.write(jinkDocument, f);
 			jinkDocument.setSaveLoc(f);
 			jinkDocument.setDirty(false);
+			Settings.getCommonSettings().putSetting("last-loc", f.getPath());
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();

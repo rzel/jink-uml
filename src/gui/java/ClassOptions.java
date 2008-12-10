@@ -4,8 +4,10 @@ import gui.beans.ClassOptions_Beans;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedList;
 
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
 import core.JavaJinkDocument;
@@ -50,6 +52,42 @@ public class ClassOptions extends ClassOptions_Beans {
 		doc.notifyDirty(editing);
 	}
 
+	private void editSelectedField() {
+		int i = super.fieldList.getSelectedIndex();
+		if (i >= 0) {
+			Object ret = JOptionPane.showInputDialog(this,
+					"Enter your changes:", "Edit Field",
+					JOptionPane.PLAIN_MESSAGE, null, null, fieldModel.get(i))
+					.toString();
+			if (ret != null) {
+				fieldModel.add(i, ret.toString());
+				fieldModel.remove(i + 1);
+				LinkedList<String> fields = editing.getFields();
+				fields.add(i, ret.toString());
+				fields.remove(i + 1);
+			}
+		}
+		doc.notifyDirty(editing);
+	}
+
+	private void editSelectedMethod() {
+		int i = super.methodList.getSelectedIndex();
+		if (i >= 0) {
+			Object ret = JOptionPane.showInputDialog(this,
+					"Enter your changes:", "Edit Method",
+					JOptionPane.PLAIN_MESSAGE, null, null, methodModel.get(i))
+					.toString();
+			if (ret != null) {
+				methodModel.add(i, ret.toString());
+				methodModel.remove(i + 1);
+				LinkedList<String> methods = editing.getMethods();
+				methods.add(i, ret.toString());
+				methods.remove(i + 1);
+			}
+		}
+		doc.notifyDirty(editing);
+	}
+
 	private void deleteSelectedFields() {
 		int[] indices = super.fieldList.getSelectedIndices();
 		for (int j = indices.length - 1; j >= 0; j--) {
@@ -64,6 +102,14 @@ public class ClassOptions extends ClassOptions_Beans {
 	@Override
 	protected JPopupMenu getMethodPopupMenu() {
 		JPopupMenu jpm = new JPopupMenu();
+		JMenuItem edit = new JMenuItem("Edit");
+		edit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				editSelectedMethod();
+			}
+		});
+		jpm.add(edit);
 		JMenuItem remove = new JMenuItem("Delete");
 		remove.addActionListener(new ActionListener() {
 			@Override
@@ -78,6 +124,14 @@ public class ClassOptions extends ClassOptions_Beans {
 	@Override
 	protected JPopupMenu getFieldPopupMenu() {
 		JPopupMenu jpm = new JPopupMenu();
+		JMenuItem edit = new JMenuItem("Edit");
+		edit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				editSelectedField();
+			}
+		});
+		jpm.add(edit);
 		JMenuItem remove = new JMenuItem("Delete");
 		remove.addActionListener(new ActionListener() {
 			@Override

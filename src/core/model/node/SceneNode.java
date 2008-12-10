@@ -31,7 +31,7 @@ public abstract class SceneNode {
 
 	public SceneNode(int id, String name, Rectangle bounds) {
 		if (id >= ID)
-			ID = id;
+			ID = id + 1;
 		this.id = id;
 		this.name = name;
 		this.bounds = bounds;
