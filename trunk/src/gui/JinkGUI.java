@@ -123,6 +123,11 @@ public class JinkGUI extends JinkGUI_Beans implements ListSelectionListener {
 
 	@Override
 	protected void exit() {
+		try {
+			onShutdownHook();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		System.exit(0);
 	}
 

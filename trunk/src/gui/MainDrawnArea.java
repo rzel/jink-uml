@@ -269,6 +269,7 @@ public class MainDrawnArea extends JComponent {
 		@Override
 		public void mouseEntered(MouseEvent e) {
 			mouseIn = true;
+			requestFocusInWindow();
 			repaint();
 		}
 
@@ -335,6 +336,10 @@ public class MainDrawnArea extends JComponent {
 		}
 	}
 
+	private boolean noMods() {
+		return !codes[KeyEvent.VK_CONTROL] && !codes[KeyEvent.VK_SHIFT];
+	}
+
 	boolean[] codes = new boolean[1024];
 	private final KeyAdapter keyAdapter = new KeyAdapter() {
 
@@ -359,19 +364,23 @@ public class MainDrawnArea extends JComponent {
 		Thread t = new Thread(new Runnable() {
 			public void run() {
 				while (true) {
-					if (codes[KeyEvent.VK_LEFT] || codes[KeyEvent.VK_A]) {
-						panX -= GRID_SIZE;
-						repaint();
-					} else if (codes[KeyEvent.VK_RIGHT] || codes[KeyEvent.VK_D]) {
-						panX += GRID_SIZE;
-						repaint();
-					}
-					if (codes[KeyEvent.VK_UP] || codes[KeyEvent.VK_W]) {
-						panY -= GRID_SIZE;
-						repaint();
-					} else if (codes[KeyEvent.VK_DOWN] || codes[KeyEvent.VK_S]) {
-						panY += GRID_SIZE;
-						repaint();
+					if (noMods()) {
+						if (codes[KeyEvent.VK_LEFT] || codes[KeyEvent.VK_A]) {
+							panX -= GRID_SIZE;
+							repaint();
+						} else if (codes[KeyEvent.VK_RIGHT]
+								|| codes[KeyEvent.VK_D]) {
+							panX += GRID_SIZE;
+							repaint();
+						}
+						if (codes[KeyEvent.VK_UP] || codes[KeyEvent.VK_W]) {
+							panY -= GRID_SIZE;
+							repaint();
+						} else if (codes[KeyEvent.VK_DOWN]
+								|| codes[KeyEvent.VK_S]) {
+							panY += GRID_SIZE;
+							repaint();
+						}
 					}
 					try {
 						Thread.sleep(30);

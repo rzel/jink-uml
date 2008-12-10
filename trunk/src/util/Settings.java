@@ -175,7 +175,6 @@ public class Settings {
 				folder.mkdir();
 			File settingsFile = new File(folder.getPath() + File.separatorChar
 					+ '.' + "jink");
-			System.out.println("using settings file: " + settingsFile);
 			COMMON_SETTINGS = new Settings(settingsFile);
 		}
 		return COMMON_SETTINGS;
