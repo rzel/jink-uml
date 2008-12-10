@@ -58,8 +58,9 @@ public class UMLModel {
 		return id;
 	}
 
-	public void addLink(SceneNode selected, SceneNode arrowTo) {
-		graph.get(selected).add(arrowTo);
+	public void addLink(SceneNode from, SceneNode to) {
+		if (from != to)
+			graph.get(from).add(to);
 	}
 
 	public HashMap<SceneNode, HashSet<SceneNode>> getGraph() {

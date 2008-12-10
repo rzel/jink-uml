@@ -4,8 +4,10 @@ import gui.beans.InterfaceOptions_Beans;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedList;
 
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
 import core.JavaJinkDocument;
@@ -43,9 +45,82 @@ public class InterfaceOptions extends InterfaceOptions_Beans {
 		doc.notifyDirty(editing);
 	}
 
+	private void editSelectedMethod() {
+		int i = super.methodList.getSelectedIndex();
+		if (i >= 0) {
+			Object ret = JOptionPane.showInputDialog(this,
+					"Enter your changes:", "Edit Method",
+					JOptionPane.PLAIN_MESSAGE, null, null, methodModel.get(i));
+			if (ret != null) {
+				methodModel.add(i, ret.toString());
+				methodModel.remove(i + 1);
+				LinkedList<String> methods = editing.getMethods();
+				methods.add(i, ret.toString());
+				methods.remove(i + 1);
+			}
+		}
+		doc.notifyDirty(editing);
+	}
+
+	private void moveSelectedMethodsDown() {
+		int[] indices = super.methodList.getSelectedIndices();
+		for (int j = indices.length - 1; j >= 0; j--) {
+			int i = indices[j];
+			if (i < methodModel.getSize() - 1) {
+				String txt = (String) methodModel.get(i);
+				methodModel.remove(i);
+				methodModel.add(i + 1, txt);
+				editing.getMethods().remove(txt);
+				editing.getMethods().add(i + 1, txt);
+				methodList.addSelectionInterval(i + 1, i + 1);
+			}
+		}
+		doc.notifyDirty(editing);
+	}
+
+	private void moveSelectedMethodsUp() {
+		int[] indices = super.methodList.getSelectedIndices();
+		for (int j = 0; j < indices.length; j++) {
+			int i = indices[j];
+			if (i > 0) {
+				String txt = (String) methodModel.get(i);
+				methodModel.remove(i);
+				methodModel.add(i - 1, txt);
+				editing.getMethods().remove(txt);
+				editing.getMethods().add(i - 1, txt);
+				methodList.addSelectionInterval(i - 1, i - 1);
+			}
+		}
+		doc.notifyDirty(editing);
+	}
+
 	@Override
 	protected JPopupMenu getMethodPopupMenu() {
 		JPopupMenu jpm = new JPopupMenu();
+		JMenuItem edit = new JMenuItem("Edit");
+		edit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				editSelectedMethod();
+			}
+		});
+		jpm.add(edit);
+		JMenuItem up = new JMenuItem("Move Up");
+		up.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				moveSelectedMethodsUp();
+			}
+		});
+		jpm.add(up);
+		JMenuItem down = new JMenuItem("Move Down");
+		down.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				moveSelectedMethodsDown();
+			}
+		});
+		jpm.add(down);
 		JMenuItem remove = new JMenuItem("Delete");
 		remove.addActionListener(new ActionListener() {
 			@Override
