@@ -19,10 +19,10 @@ public class JavaModelRenderer extends ModelRenderer {
 	private static final Font class_font = new Font("Arial", Font.PLAIN, 14),
 			interface_font = new Font("Arial", Font.ITALIC, 14),
 			stringsFont = class_font;
-	private static final Color class_fill = new Color(255, 240, 225),
-			outer_border = Color.black, title_color = Color.black,
-			dividor_color = Color.black, interface_fill = new Color(240, 255,
-					240);
+	private static final Color abstract_color = new Color(255, 240, 225),
+			class_fill = new Color(255, 210, 195), outer_border = Color.black,
+			title_color = Color.black, dividor_color = Color.black,
+			interface_fill = new Color(240, 255, 240);
 
 	public JavaModelRenderer(UMLModel model) {
 		super(model);
@@ -34,7 +34,10 @@ public class JavaModelRenderer extends ModelRenderer {
 		int w = n.getWidth(), h = n.getHeight();
 		if (n instanceof ClassNode) {
 			ClassNode c = (ClassNode) n;
-			g.setColor(class_fill);
+			if (c.isAbstract())
+				g.setColor(abstract_color);
+			else
+				g.setColor(class_fill);
 			g.fillRect(x, y, w, h);
 			g.setColor(outer_border);
 			g.drawRect(x, y, w, h);

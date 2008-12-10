@@ -16,9 +16,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import util.JinkFileFilter;
+import util.Settings;
+import core.JavaJinkDocument;
 import core.Jink;
 import core.JinkDocument;
-import core.PlanningDocument;
 import core.io.JinkIO;
 import core.model.node.SceneNode;
 
@@ -56,7 +57,7 @@ public class JinkGUI extends JinkGUI_Beans implements ListSelectionListener {
 	@Override
 	public void newChart() {
 		controller.closeDocument();
-		JinkDocument newDocument = new PlanningDocument("Untitled "
+		JinkDocument newDocument = new JavaJinkDocument("Untitled "
 				+ (++COUNTER), super.stackList, super.nodeInfoHolder);
 		controller.setCurrentDocument(newDocument);
 		BeanUtils.setInner(super.mainAreaContainer, newDocument
@@ -84,6 +85,7 @@ public class JinkGUI extends JinkGUI_Beans implements ListSelectionListener {
 			BeanUtils.setInner(super.sideBarContainer, jd
 					.getSideRenderedPanel());
 			sideBarContainer.revalidate();
+			Settings.getCommonSettings().putSetting("last-loc", f.getPath());
 		} catch (Exception e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this,
@@ -115,6 +117,7 @@ public class JinkGUI extends JinkGUI_Beans implements ListSelectionListener {
 	}
 
 	private void onShutdownHook() {
+		Settings.getCommonSettings().saveSettings();
 		controller.closeDocument();
 	}
 
@@ -132,7 +135,8 @@ public class JinkGUI extends JinkGUI_Beans implements ListSelectionListener {
 
 	public JFileChooser getFileChooser() {
 		if (jfc == null) {
-			jfc = new JFileChooser();
+			jfc = new JFileChooser(Settings.getCommonSettings().getSetting(
+					"last-loc"));
 			jfc.setFileFilter(new JinkFileFilter());
 			jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		}

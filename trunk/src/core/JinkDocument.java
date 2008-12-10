@@ -66,6 +66,7 @@ public abstract class JinkDocument {
 		stackList.setSelectedIndex(0);
 		renderer = getModelRenderer();
 		renderedPanel = new MainDrawnArea(this, renderer);
+		renderedPanel.centerOn(currentModel.getBounds());
 	}
 
 	protected abstract ModelRenderer getModelRenderer();
@@ -82,6 +83,7 @@ public abstract class JinkDocument {
 		currentModel = nextPlane;
 		renderer.setModel(currentModel);
 		stackList.setSelectedIndex(stackListModel.getSize() - 1);
+		renderedPanel.centerOn(currentModel.getBounds());
 		listLocked = false;
 	}
 
@@ -95,6 +97,7 @@ public abstract class JinkDocument {
 		renderer.setModel(currentModel);
 		stackListModel.remove(stackListModel.getSize() - 1);
 		stackList.setSelectedIndex(stackListModel.getSize() - 1);
+		renderedPanel.centerOn(currentModel.getBounds());
 		listLocked = false;
 	}
 

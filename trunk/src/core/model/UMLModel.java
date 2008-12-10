@@ -1,11 +1,13 @@
 package core.model;
 
+import java.awt.Rectangle;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
 import util.ByteBuffer;
 import util.ByteReader;
+import util.JinkUtils;
 import core.model.node.SceneNode;
 
 public class UMLModel {
@@ -100,10 +102,19 @@ public class UMLModel {
 			SceneNode from = model.nodeForID(b.readShort());
 			int numLinks = b.read();
 			for (int j = 0; j < numLinks; j++) {
-				model.addLink(from, model.nodeForID(b.readShort()));
+				SceneNode to = model.nodeForID(b.readShort());
+				model.addLink(from, to);
 			}
 		}
 		return model;
+	}
+
+	public void removeLinksFrom(SceneNode selected) {
+		graph.get(selected).clear();
+	}
+
+	public Rectangle getBounds() {
+		return JinkUtils.calculateBounds(graph.keySet().iterator());
 	}
 
 }

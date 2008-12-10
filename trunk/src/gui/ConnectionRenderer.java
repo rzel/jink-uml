@@ -12,13 +12,13 @@ public class ConnectionRenderer {
 
 	private final Stroke lineStroke = new BasicStroke(5.0f,
 			BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-	private final Color strokeColor = new Color(0, 0, 0, 100);
+	private final Color strokeColor = new Color(0, 0, 0, 200);
 
-	public void render(Graphics2D g, SceneNode a, SceneNode b) {
+	public void render(Graphics2D g, SceneNode a, SceneNode b, boolean ordered) {
 		if (a.getBounds().intersects(b.getBounds()))
 			return;
 		if (a.getX() > b.getX()) {
-			render(g, b, a);
+			render(g, b, a, false);
 			return;
 		}
 		int acx = a.getX() + a.getWidth() / 2, acy = a.getY() + a.getHeight()
@@ -37,7 +37,7 @@ public class ConnectionRenderer {
 				p = getTop(a);
 				p2 = getBottom(b);
 			}
-			g.drawLine(p.x, p.y, p2.x, p2.y);
+			drawLine(g, p.x, p.y, p2.x, p2.y, ordered);
 		} else if (a.getY() + a.getHeight() >= b.getY()
 				&& a.getY() < b.getY() + b.getHeight()) {
 			Point p, p2;
@@ -48,7 +48,7 @@ public class ConnectionRenderer {
 				p = getLeft(a);
 				p2 = getRight(b);
 			}
-			g.drawLine(p.x, p.y, p2.x, p2.y);
+			drawLine(g, p.x, p.y, p2.x, p2.y, ordered);
 		} else {
 			if (a.getY() < b.getY()) {
 				// **X**
@@ -59,15 +59,15 @@ public class ConnectionRenderer {
 					// right --> top
 					p = getRight(a);
 					p2 = getTop(b);
-					g.drawLine(p.x, p.y, p2.x, p.y);
-					g.drawLine(p2.x, p.y, p2.x, p2.y);
+					drawLine(g, p.x, p.y, p2.x, p.y, ordered);
+					drawLine(g, p2.x, p.y, p2.x, p2.y, ordered);
 
 				} else {
 					// bottom --> left
 					p = getBottom(a);
 					p2 = getLeft(b);
-					g.drawLine(p.x, p.y, p.x, p2.y);
-					g.drawLine(p.x, p2.y, p2.x, p2.y);
+					drawLine(g, p.x, p.y, p.x, p2.y, ordered);
+					drawLine(g, p.x, p2.y, p2.x, p2.y, ordered);
 				}
 			} else {
 				// ***Y*
@@ -78,17 +78,68 @@ public class ConnectionRenderer {
 					// top --> right
 					p = getTop(a);
 					p2 = getLeft(b);
-					g.drawLine(p.x, p.y, p.x, p2.y);
-					g.drawLine(p.x, p2.y, p2.x, p2.y);
+					drawLine(g, p.x, p.y, p.x, p2.y, ordered);
+					drawLine(g, p.x, p2.y, p2.x, p2.y, ordered);
 				} else {
 					// right --> bottom
 					p = getRight(a);
 					p2 = getBottom(b);
-					g.drawLine(p.x, p.y, p2.x, p.y);
-					g.drawLine(p2.x, p.y, p2.x, p2.y);
+					drawLine(g, p.x, p.y, p2.x, p.y, ordered);
+					drawLine(g, p2.x, p.y, p2.x, p2.y, ordered);
 				}
 			}
 		}
+	}
+
+	private void drawLine(Graphics2D g, double x, double y, double xx,
+			double yy, boolean ordered) {
+		if (ordered)
+			drawArrow(g, (int) x, (int) y, (int) xx, (int) yy);
+		else
+			drawArrow(g, (int) xx, (int) yy, (int) x, (int) y);
+	}
+
+	private void drawArrow(Graphics2D g, int x, int y, int xx, int yy) {
+		float arrowWidth = 15.0f;
+		float theta = 0.623f;
+		int[] xPoints = new int[3];
+		int[] yPoints = new int[3];
+		float[] vecLine = new float[2];
+		float[] vecLeft = new float[2];
+		float fLength;
+		float th;
+		float ta;
+		float baseX, baseY;
+
+		xPoints[0] = xx;
+		yPoints[0] = yy;
+
+		// build the line vector
+		vecLine[0] = (float) xPoints[0] - x;
+		vecLine[1] = (float) yPoints[0] - y;
+
+		// build the arrow base vector - normal to the line
+		vecLeft[0] = -vecLine[1];
+		vecLeft[1] = vecLine[0];
+
+		// setup length parameters
+		fLength = (float) Math.sqrt(vecLine[0] * vecLine[0] + vecLine[1]
+				* vecLine[1]);
+		th = arrowWidth / (2.0f * fLength);
+		ta = arrowWidth / (2.0f * ((float) Math.tan(theta) / 2.0f) * fLength);
+
+		// find the base of the arrow
+		baseX = (xPoints[0] - ta * vecLine[0]);
+		baseY = (yPoints[0] - ta * vecLine[1]);
+
+		// build the points on the sides of the arrow
+		xPoints[1] = (int) (baseX + th * vecLeft[0]);
+		yPoints[1] = (int) (baseY + th * vecLeft[1]);
+		xPoints[2] = (int) (baseX - th * vecLeft[0]);
+		yPoints[2] = (int) (baseY - th * vecLeft[1]);
+
+		g.drawLine(x, y, (int) baseX, (int) baseY);
+		g.fillPolygon(xPoints, yPoints, 3);
 	}
 
 	private Point getRight(SceneNode a) {
