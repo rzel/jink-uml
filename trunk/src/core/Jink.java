@@ -27,6 +27,7 @@ public class Jink {
 	}
 
 	public void setCurrentDocument(JinkDocument jinkDocument) {
+		System.out.println("doc set to: " + jinkDocument);
 		this.current = jinkDocument;
 		if (jinkDocument == null) {
 			gui.setTitle("Jink UML Planner");
@@ -63,6 +64,7 @@ public class Jink {
 			}
 		}
 		try {
+			jinkDocument.setTitle(f.getName());
 			JinkIO.write(jinkDocument, f);
 			jinkDocument.setSaveLoc(f);
 			jinkDocument.setDirty(false);

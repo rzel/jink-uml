@@ -30,7 +30,7 @@ public abstract class JinkDocument {
 	private boolean hasChange = false;
 
 	private File saveLoc;
-	private final String title;
+	private String title;
 	protected final UMLModel root;
 	private UMLModel currentModel;
 	private final LinkedHashMap<SceneNode, UMLModel> planeShifts;
@@ -249,6 +249,10 @@ public abstract class JinkDocument {
 				nodeDeleted(s);
 			}
 		}
+	}
+
+	public void setTitle(String name) {
+		this.title = name;
 	}
 
 }

@@ -363,6 +363,11 @@ public class MainDrawnArea extends JComponent {
 				selected = null;
 				repaint();
 			}
+		} else if (code == KeyEvent.VK_END) {
+			selected = controller.getModel().getNodeAt(mouseX, mouseY);
+			if (selected != null)
+				controller.getModel().removeLinksFrom(selected);
+			repaint();
 		}
 		if (codes[KeyEvent.VK_CONTROL]) {
 			if (code == KeyEvent.VK_C) {
