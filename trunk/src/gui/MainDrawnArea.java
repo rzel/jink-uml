@@ -12,7 +12,11 @@ import java.awt.event.MouseWheelEvent;
 
 import javax.swing.JComponent;
 
+import util.ByteBuffer;
+import util.ByteReader;
+import util.JinkUtils;
 import core.JinkDocument;
+import core.Perspective;
 import core.model.node.SceneNode;
 
 public class MainDrawnArea extends JComponent {
@@ -284,47 +288,72 @@ public class MainDrawnArea extends JComponent {
 			if (mouseDown)
 				return;
 			double t = e.getWheelRotation();
-			int ox = getWidth() / 2;
-			int oy = getHeight() / 2;
-			int x = ox;
-			int y = oy;
-			x /= zoom;
-			y /= zoom;
-			x += panX;
-			y += panY;
-			zoom *= 1 - t / 12.0;
-			if (zoom < ZOOM_MIN)
-				zoom = ZOOM_MIN;
-			if (zoom > ZOOM_MAX)
-				zoom = ZOOM_MAX;
-			panX = x - ox / zoom;
-			panY = y - oy / zoom;
-			panX = panX / GRID_SIZE * GRID_SIZE;
-			panY = panY / GRID_SIZE * GRID_SIZE;
-			if (zoom >= 3 && t < 0) {
-				SceneNode into = controller.getModel().getNodeAt(x, y);
-				if (into != null) {
-					zoom = 1;
-					panX = 0;
-					panY = 0;
-					selected = null;
-					controller.setSelectedNode(null);
-					controller.zoomInto(into);
-				}
-			} else if (t > 0 && zoom < .4) {
-				if (controller.isAtRoot() == false) {
-					zoom = 1;
-					panX = 0;
-					panY = 0;
-					selected = null;
-					controller.setSelectedNode(null);
-					controller.zoomOut();
-				}
-			}
-			repaint();
+			zoom(t);
 		}
-
 	};
+
+	private void copy() {
+		if (selected != null) {
+			ByteBuffer bb = new ByteBuffer();
+			selected.writeTo(bb);
+			JinkUtils.setClipboard(bb.toByteArray());
+		} else {
+			JinkUtils.setClipboard(null);
+		}
+	}
+
+	private void paste() {
+		byte[] bytes = JinkUtils.getClipboard();
+		if (bytes == null)
+			return;
+		ByteReader b = new ByteReader(bytes);
+		SceneNode s = SceneNode.readFrom(b);
+		s.setNextID();
+		s.setLocation(mouseX - s.getWidth() / 2, mouseY - s.getHeight() / 2);
+		controller.getModel().addNode(s);
+		repaint();
+	}
+
+	private void zoom(double t) {
+		int ox = getWidth() / 2;
+		int oy = getHeight() / 2;
+		int x = ox;
+		int y = oy;
+		x /= zoom;
+		y /= zoom;
+		x += panX;
+		y += panY;
+		zoom *= 1 - t / 12.0;
+		if (zoom < ZOOM_MIN)
+			zoom = ZOOM_MIN;
+		if (zoom > ZOOM_MAX)
+			zoom = ZOOM_MAX;
+		panX = x - ox / zoom;
+		panY = y - oy / zoom;
+		panX = panX / GRID_SIZE * GRID_SIZE;
+		panY = panY / GRID_SIZE * GRID_SIZE;
+		if (zoom >= 3 && t < 0) {
+			SceneNode into = controller.getModel().getNodeAt(x, y);
+			if (into != null) {
+				zoom = 1;
+				panX = 0;
+				panY = 0;
+				selected = null;
+				controller.setSelectedNode(null);
+				controller.zoomInto(into);
+			}
+		} else if (t > 0 && zoom < .4) {
+			if (controller.isAtRoot() == false) {
+				zoom = 1;
+				panX = 0;
+				panY = 0;
+				selected = null;
+				controller.setSelectedNode(null);
+				controller.zoomOut();
+			}
+		}
+		repaint();
+	}
 
 	private void pressed(int code) {
 		if (code == KeyEvent.VK_DELETE) {
@@ -332,6 +361,13 @@ public class MainDrawnArea extends JComponent {
 				controller.getModel().removeNode(selected);
 				selected = null;
 				repaint();
+			}
+		}
+		if (codes[KeyEvent.VK_CONTROL]) {
+			if (code == KeyEvent.VK_C) {
+				copy();
+			} else if (code == KeyEvent.VK_V) {
+				paste();
 			}
 		}
 	}
@@ -381,6 +417,11 @@ public class MainDrawnArea extends JComponent {
 							panY += GRID_SIZE;
 							repaint();
 						}
+						if (codes[KeyEvent.VK_PAGE_UP]) {
+							zoom(-1);
+						} else if (codes[KeyEvent.VK_PAGE_DOWN]) {
+							zoom(1);
+						}
 					}
 					try {
 						Thread.sleep(30);
@@ -426,6 +467,21 @@ public class MainDrawnArea extends JComponent {
 	public void centerOn(Rectangle bounds) {
 		panX = bounds.x - GRID_SIZE;
 		panY = bounds.y - GRID_SIZE;
+		repaint();
+	}
+
+	public Perspective getPerspective() {
+		return new Perspective(panX, panY, zoom);
+	}
+
+	public void applyPerspective(Perspective perspective) {
+		if (perspective == null) {
+			centerOn(controller.getModel().getBounds());
+			return;
+		}
+		panX = perspective.panX;
+		panY = perspective.panY;
+		zoom = perspective.zoom;
 		repaint();
 	}
 }

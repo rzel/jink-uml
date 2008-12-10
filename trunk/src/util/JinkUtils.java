@@ -25,4 +25,14 @@ public class JinkUtils {
 		return new Rectangle(minX, minY, maxX - minX, maxY - minY);
 	}
 
+	public static byte[] getClipboard() {
+		return clip;
+	}
+
+	private static byte[] clip = null;
+
+	public static void setClipboard(byte[] b) {
+		clip = b;
+	}
+
 }

@@ -61,4 +61,13 @@ public class JavaJinkDocument extends JinkDocument {
 		return 1;
 	}
 
+	@Override
+	public void activate(SceneNode selected) {
+		if (selected instanceof InterfaceNode || selected instanceof ClassNode) {
+			renderedPanel.clearSelection();
+			zoomInto(selected);
+		} else {
+			super.activate(selected);
+		}
+	}
 }
