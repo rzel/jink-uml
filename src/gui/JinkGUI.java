@@ -52,6 +52,8 @@ public class JinkGUI extends JinkGUI_Beans implements ListSelectionListener {
 		});
 		super.stackList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		super.stackList.addListSelectionListener(this);
+		super.showGlimpseMenuItem.setSelected(false);
+		ModelRenderer.SHOW_GLIMPSES = false;
 	}
 
 	@Override

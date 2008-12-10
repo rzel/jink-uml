@@ -57,8 +57,10 @@ public class ModelRenderer {
 			if (SHOW_GLIMPSES) {
 				BufferedImage bi = ((RecursiveSceneNode) n).getGlimpse();
 				if (bi != null) {
-					g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-							RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+					g
+							.setRenderingHint(
+									RenderingHints.KEY_INTERPOLATION,
+									RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 					g.drawImage(bi, x, y + 16, w, h - 16, null);
 				}
 			}

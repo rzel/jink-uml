@@ -34,9 +34,10 @@ public abstract class JinkDocument {
 	protected final UMLModel root;
 	private UMLModel currentModel;
 	private final LinkedHashMap<SceneNode, UMLModel> planeShifts;
+	private final HashMap<UMLModel, Perspective> modelPerspectives = new HashMap<UMLModel, Perspective>();
 	private final Stack<UMLModel> stack = new Stack<UMLModel>();
 	private final ModelRenderer renderer;
-	private final MainDrawnArea renderedPanel;
+	protected final MainDrawnArea renderedPanel;
 	private final SideDrawnArea sidePanel;
 	private final SceneNodeSet nodeSet;
 	private final JList stackList;
@@ -53,9 +54,7 @@ public abstract class JinkDocument {
 		this.planeShifts = planeShifts;
 		if (planeShifts.size() == 0) {
 			root = new UMLModel();
-			RecursiveSceneNode rsn = new RecursiveSceneNode();
-			rsn.setName("root");
-			planeShifts.put(rsn, root);
+			planeShifts.put(SceneNode.ROOT_NODE, root);
 		} else
 			root = planeShifts.values().iterator().next();
 		currentModel = root;
@@ -73,6 +72,7 @@ public abstract class JinkDocument {
 
 	public void zoomInto(SceneNode into) {
 		listLocked = true;
+		savePerspective();
 		UMLModel nextPlane = planeShifts.get(into);
 		if (nextPlane == null) {
 			nextPlane = new UMLModel();
@@ -83,7 +83,7 @@ public abstract class JinkDocument {
 		currentModel = nextPlane;
 		renderer.setModel(currentModel);
 		stackList.setSelectedIndex(stackListModel.getSize() - 1);
-		renderedPanel.centerOn(currentModel.getBounds());
+		renderedPanel.applyPerspective(modelPerspectives.get(currentModel));
 		listLocked = false;
 	}
 
@@ -91,13 +91,14 @@ public abstract class JinkDocument {
 		if (currentModel == root) {
 			return;
 		}
+		savePerspective();
 		applyGlimpse(currentModel);
 		listLocked = true;
 		currentModel = stack.pop();
 		renderer.setModel(currentModel);
 		stackListModel.remove(stackListModel.getSize() - 1);
 		stackList.setSelectedIndex(stackListModel.getSize() - 1);
-		renderedPanel.centerOn(currentModel.getBounds());
+		renderedPanel.applyPerspective(modelPerspectives.get(currentModel));
 		listLocked = false;
 	}
 
@@ -177,10 +178,16 @@ public abstract class JinkDocument {
 	public void stackPressed(SceneNode sn) {
 		if (listLocked)
 			return;
+		renderedPanel.clearSelection();
 		UMLModel to = planeShifts.get(sn);
-		while (currentModel != to)
+		while (currentModel != to && currentModel != root)
 			zoomOut();
 		renderedPanel.repaint();
+	}
+
+	private void savePerspective() {
+		Perspective p = renderedPanel.getPerspective();
+		modelPerspectives.put(currentModel, p);
 	}
 
 	public void setSelectedNode(SceneNode selected) {

@@ -18,7 +18,7 @@ public abstract class SceneNode {
 
 	private static int ID = 0;
 
-	protected final int id;
+	protected int id;
 	protected Rectangle bounds;
 	protected String name;
 
@@ -128,5 +128,9 @@ public abstract class SceneNode {
 
 	public static final SceneNode ROOT_NODE = new RecursiveSceneNode(0, "root",
 			new Rectangle());
+
+	public void setNextID() {
+		id = ID++;
+	}
 
 }
