@@ -7,28 +7,38 @@ import util.ByteBuffer;
 import util.ByteReader;
 import core.model.node.SceneNode;
 
-public class LinkNode extends SceneNode {
+public class TextNode extends SceneNode {
 
-	public static final int ID = 3;
+	public static final int ID = 4;
 
-	private String url;
+	private String text;
 
-	public LinkNode() {
-		url = "http://";
+	public TextNode() {
+		text = "";
 	}
 
-	public LinkNode(int id, String name, Rectangle bounds) {
+	public TextNode(int id, String name, Rectangle bounds) {
 		super(id, name, bounds);
 	}
 
 	@Override
 	public Dimension getInitalSize() {
-		return new Dimension(180, 50);
+		return new Dimension(180, 80);
+	}
+
+	public void setText(String text) {
+		if (text == null)
+			text = "";
+		this.text = text;
+	}
+
+	public String getText() {
+		return text;
 	}
 
 	@Override
 	public String getNodeType() {
-		return "Link";
+		return "Text";
 	}
 
 	@Override
@@ -38,20 +48,12 @@ public class LinkNode extends SceneNode {
 
 	@Override
 	protected void readAttributes(ByteReader bb) {
-		url = bb.readString();
+		text = bb.readString();
 	}
 
 	@Override
 	protected void writeAttributes(ByteBuffer bb) {
-		bb.addString(url);
-	}
-
-	public String getURL() {
-		return url;
-	}
-
-	public void setURL(String url) {
-		this.url = url;
+		bb.addString(text);
 	}
 
 }

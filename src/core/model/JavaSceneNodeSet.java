@@ -6,11 +6,13 @@ import core.model.node.RecursiveSceneNode;
 import core.model.node.SceneNode;
 import core.model.node.java.ClassNode;
 import core.model.node.java.InterfaceNode;
+import core.model.node.planning.LinkNode;
+import core.model.node.planning.TextNode;
 
 public class JavaSceneNodeSet extends SceneNodeSet {
 
-	private static final String[] NAMES = new String[] { "Node", "Class",
-			"Interface" };
+	private static final String[] NAMES = new String[] { "Class", "Interface",
+			"Text", "Node", "Link" };
 	private final LinkedList<String> nodeNames;
 
 	public JavaSceneNodeSet() {
@@ -33,7 +35,13 @@ public class JavaSceneNodeSet extends SceneNodeSet {
 			return new InterfaceNode();
 		} else if (type.equals("Node")) {
 			return new RecursiveSceneNode();
-		} else {
+		} else if (type.equals("Link")) {
+			return new LinkNode();
+		} else if (type.equals("Text")) {
+			return new TextNode();
+		}
+
+		else {
 			throw new RuntimeException("Couldn't find node of type: " + type);
 		}
 	}

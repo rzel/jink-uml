@@ -7,6 +7,8 @@ import util.ByteBuffer;
 import util.ByteReader;
 import core.model.node.java.ClassNode;
 import core.model.node.java.InterfaceNode;
+import core.model.node.planning.LinkNode;
+import core.model.node.planning.TextNode;
 
 /**
  * The super-class of all nodes.
@@ -119,6 +121,10 @@ public abstract class SceneNode {
 			node = new ClassNode(id, name, bounds);
 		} else if (type == InterfaceNode.ID) {
 			node = new InterfaceNode(id, name, bounds);
+		} else if (type == LinkNode.ID) {
+			node = new LinkNode(id, name, bounds);
+		} else if (type == TextNode.ID) {
+			node = new TextNode(id, name, bounds);
 		}
 		if (node == null)
 			throw new RuntimeException("Don't recognize node with ID=" + id);

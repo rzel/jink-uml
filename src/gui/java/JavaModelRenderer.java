@@ -13,16 +13,20 @@ import core.model.UMLModel;
 import core.model.node.SceneNode;
 import core.model.node.java.ClassNode;
 import core.model.node.java.InterfaceNode;
+import core.model.node.planning.LinkNode;
+import core.model.node.planning.TextNode;
 
 public class JavaModelRenderer extends ModelRenderer {
 
 	private static final Font class_font = new Font("Arial", Font.PLAIN, 14),
 			interface_font = new Font("Arial", Font.ITALIC, 14),
-			stringsFont = class_font;
+			stringsFont = class_font, text_font = class_font;
+	private static final Font link_font = new Font("Arial", Font.ITALIC, 14);
 	private static final Color abstract_color = new Color(255, 240, 225),
 			class_fill = new Color(255, 210, 195), outer_border = Color.black,
 			title_color = Color.black, dividor_color = Color.black,
-			interface_fill = new Color(240, 255, 240);
+			interface_fill = new Color(240, 255, 240), link_fill = new Color(
+					255, 240, 240), text_fill = new Color(240, 240, 240);
 
 	public JavaModelRenderer(UMLModel model) {
 		super(model);
@@ -77,10 +81,42 @@ public class JavaModelRenderer extends ModelRenderer {
 			g.drawLine(x, y + 16, x + w, y + 16);
 			g.setFont(stringsFont);
 			drawStringsInBox(g, x, y + 16, w, h - 16, c.getMethods());
+		} else if (n instanceof LinkNode) {
+			LinkNode c = (LinkNode) n;
+			g.setColor(link_fill);
+			g.fillRect(x, y, w, h);
+			g.setColor(outer_border);
+			g.drawRect(x, y, w, h);
+			g.setColor(title_color);
+			g.setFont(link_font);
+			drawCenteredString(g, n.getName(), x, y, w);
+			g.setColor(dividor_color);
+			g.drawLine(x, y + 16, x + w, y + 16);
+			FontMetrics fm = g.getFontMetrics();
+			String s = getCutOffString(g, c.getURL(), w, fm);
+			g.drawString(s, x + 2, y + 16 + fm.getAscent());
+		} else if (n instanceof TextNode) {
+			TextNode c = (TextNode) n;
+			g.setColor(text_fill);
+			g.fillRect(x, y, w, h);
+			g.setColor(outer_border);
+			g.drawRect(x, y, w, h);
+			g.setColor(title_color);
+			g.setFont(text_font);
+			drawCenteredString(g, n.getName(), x, y, w);
+			g.setColor(dividor_color);
+			g.drawLine(x, y + 16, x + w, y + 16);
+			String[] m = c.getText().split("\n");
+			list.clear();
+			for (String s : m)
+				list.add(s);
+			drawStringsInBox(g, x, y + 16, w, h - 16, list);
 		} else {
 			super.render(n, g);
 		}
 	}
+
+	private final LinkedList<String> list = new LinkedList<String>();
 
 	private void drawStringsInBox(Graphics2D g, int x, int y, int w, int h,
 			LinkedList<String> list) {

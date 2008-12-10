@@ -3,6 +3,7 @@ package core;
 import gui.ModelRenderer;
 import gui.planning.LinkOptions;
 import gui.planning.PlanningModelRenderer;
+import gui.planning.TextOptions;
 
 import java.awt.Desktop;
 import java.io.IOException;
@@ -18,10 +19,12 @@ import core.model.SceneNodeSet;
 import core.model.UMLModel;
 import core.model.node.SceneNode;
 import core.model.node.planning.LinkNode;
+import core.model.node.planning.TextNode;
 
 public class PlanningDocument extends JinkDocument {
 
 	private final LinkOptions linkOptionsGUI;
+	private final TextOptions textOptionsGUI;
 
 	public PlanningDocument(String title, JList stackList, JPanel optionsHolder) {
 		this(title, stackList, optionsHolder,
@@ -32,6 +35,7 @@ public class PlanningDocument extends JinkDocument {
 			JPanel optionsHolder, LinkedHashMap<SceneNode, UMLModel> planeShifts) {
 		super(title, stackList, optionsHolder, planeShifts);
 		linkOptionsGUI = new LinkOptions(this);
+		textOptionsGUI = new TextOptions(this);
 	}
 
 	@Override
@@ -43,6 +47,8 @@ public class PlanningDocument extends JinkDocument {
 	protected JPanel getOptionsFor(SceneNode node) {
 		if (node instanceof LinkNode) {
 			return linkOptionsGUI.init((LinkNode) node);
+		} else if (node instanceof TextNode) {
+			return textOptionsGUI.init((TextNode) node);
 		}
 		return super.getOptionsFor(node);
 	}
