@@ -87,8 +87,8 @@ public class ModelRenderer {
 				w += zoom * zoom * GRID_SIZE;
 				h += zoom * zoom * GRID_SIZE;
 			} else {
-				w += 3 * GRID_SIZE;
-				h += 3 * GRID_SIZE;
+				w += 5 * GRID_SIZE;
+				h += 5 * GRID_SIZE;
 			}
 			w /= zoom;
 			h /= zoom;

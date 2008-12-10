@@ -242,4 +242,13 @@ public abstract class JinkDocument {
 
 	public abstract int getTypeID();
 
+	public void nodeDeleted(SceneNode selected) {
+		UMLModel model = planeShifts.remove(selected);
+		if (model != null) {
+			for (SceneNode s : model.getGraph().keySet()) {
+				nodeDeleted(s);
+			}
+		}
+	}
+
 }

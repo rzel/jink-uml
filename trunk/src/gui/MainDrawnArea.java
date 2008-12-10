@@ -359,6 +359,7 @@ public class MainDrawnArea extends JComponent {
 		if (code == KeyEvent.VK_DELETE) {
 			if (selected != null && !mouseDown) {
 				controller.getModel().removeNode(selected);
+				controller.nodeDeleted(selected);
 				selected = null;
 				repaint();
 			}
