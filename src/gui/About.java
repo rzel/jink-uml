@@ -10,7 +10,7 @@ public class About extends About_Beans {
 
 	@Override
 	public String getVersion() {
-		return ".743";
+		return ".744";
 	}
 
 }

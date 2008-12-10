@@ -20,13 +20,14 @@ import core.model.node.SceneNode;
 
 public class JinkIO {
 
-	private static final short VERSION_ID = 2;
+	private static final short VERSION_ID = 3;
+	private static final boolean IGNORE_ERRORS = false;
 
 	public static JinkDocument read(File f, JList stackList,
 			JPanel optionsHolder) throws IOException {
 		ByteReader b = new ByteReader(new FileInputStream(f));
 		short ver = b.readShort();
-		if (ver != VERSION_ID) {
+		if (ver != VERSION_ID && !IGNORE_ERRORS) {
 			throw new RuntimeException("Wrong version. (file = " + ver + ")");
 		}
 		int type = b.read();
@@ -46,13 +47,19 @@ public class JinkIO {
 			int modelID = b.readShort();
 			SceneNode sn = findSceneNode(keyID, idModels.values());
 			UMLModel model = findModel(modelID, idModels.values());
-			if (sn == null)
-				throw new RuntimeException("Could not find key with id: "
-						+ keyID);
-			if (model == null)
-				throw new RuntimeException("Could not find model with id: "
-						+ modelID);
-			planes.put(sn, model);
+			try {
+				if (sn == null)
+					throw new RuntimeException("Could not find key with id: "
+							+ keyID);
+				if (model == null)
+					throw new RuntimeException("Could not find model with id: "
+							+ modelID);
+				planes.put(sn, model);
+			} catch (Exception e) {
+				e.printStackTrace();
+				if (IGNORE_ERRORS == false)
+					throw new RuntimeException(e);
+			}
 		}
 		if (type == 0)
 			return new PlanningDocument(title, stackList, optionsHolder, planes);
