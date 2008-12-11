@@ -67,7 +67,7 @@ public class ByteReader {
 	}
 
 	public String readString() {
-		byte len = read();
+		int len = readShort();
 		String ret = new String(b, c, len);
 		c += len;
 		return ret;

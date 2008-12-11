@@ -22,6 +22,12 @@ public class JinkIO {
 
 	private static final short VERSION_ID = 3;
 	private static final boolean IGNORE_ERRORS = false;
+	private static final boolean VERBOSE = false;
+
+	public static void verbose(String s) {
+		if (VERBOSE)
+			System.out.println(s);
+	}
 
 	public static JinkDocument read(File f, JList stackList,
 			JPanel optionsHolder) throws IOException {
@@ -31,20 +37,22 @@ public class JinkIO {
 			throw new RuntimeException("Wrong version. (file = " + ver + ")");
 		}
 		int type = b.read();
+		verbose("type: " + type);
 		String title = b.readString();
+		verbose("title = " + title);
 		short numPlanes = b.readShort();
+		verbose("numPlanes = " + numPlanes);
 		LinkedHashMap<Integer, UMLModel> idModels = new LinkedHashMap<Integer, UMLModel>();
 		for (int i = 0; i < numPlanes; i++) {
+			verbose("reading model " + i);
 			UMLModel model = UMLModel.readFrom(b);
-			if (i == 0) {
-
-			}
 			idModels.put(model.getID(), model);
 		}
 		LinkedHashMap<SceneNode, UMLModel> planes = new LinkedHashMap<SceneNode, UMLModel>();
 		for (int i = 0; i < numPlanes; i++) {
 			int keyID = b.readShort();
 			int modelID = b.readShort();
+			verbose("keyID = " + keyID + " modelID = " + modelID);
 			SceneNode sn = findSceneNode(keyID, idModels.values());
 			UMLModel model = findModel(modelID, idModels.values());
 			try {
@@ -56,7 +64,7 @@ public class JinkIO {
 							+ modelID);
 				planes.put(sn, model);
 			} catch (Exception e) {
-				e.printStackTrace();
+				// e.printStackTrace();
 				if (IGNORE_ERRORS == false)
 					throw new RuntimeException(e);
 			}

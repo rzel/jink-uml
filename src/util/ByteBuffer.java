@@ -90,7 +90,7 @@ public class ByteBuffer {
 	}
 
 	public void addString(String s) {
-		add(s.length());
+		addShort((short) s.length());
 		add(s.getBytes());
 	}
 

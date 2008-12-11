@@ -56,4 +56,8 @@ public class TextNode extends SceneNode {
 		bb.addString(text);
 	}
 
+	@Override
+	public String toString() {
+		return getName() + "  text=" + text;
+	}
 }
