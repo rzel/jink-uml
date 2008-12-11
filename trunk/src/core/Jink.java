@@ -27,7 +27,6 @@ public class Jink {
 	}
 
 	public void setCurrentDocument(JinkDocument jinkDocument) {
-		System.out.println("doc set to: " + jinkDocument);
 		this.current = jinkDocument;
 		if (jinkDocument == null) {
 			gui.setTitle("Jink UML Planner");
@@ -77,6 +76,7 @@ public class Jink {
 	}
 
 	public static void main(String[] args) {
+		// System.setOut(new DebugOut());
 		new Jink();
 	}
 

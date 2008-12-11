@@ -1,5 +1,7 @@
 package core.model;
 
+import static core.io.JinkIO.verbose;
+
 import java.awt.Rectangle;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -93,17 +95,22 @@ public class UMLModel {
 
 	public static UMLModel readFrom(ByteReader b) {
 		int id = b.readShort();
+		verbose("model id = " + id);
 		UMLModel model = new UMLModel(id);
 		int graphSize = b.readShort();
+		verbose("graph size = " + graphSize);
 		for (int i = 0; i < graphSize; i++) {
 			SceneNode sn = SceneNode.readFrom(b);
+			verbose("Read node: " + sn);
 			model.addNode(sn);
 		}
 		for (int i = 0; i < graphSize; i++) {
 			SceneNode from = model.nodeForID(b.readShort());
 			int numLinks = b.read();
+			verbose("numLinks = " + numLinks);
 			for (int j = 0; j < numLinks; j++) {
 				SceneNode to = model.nodeForID(b.readShort());
+				verbose("adding link: " + from + " to " + to);
 				model.addLink(from, to);
 			}
 		}
