@@ -20,7 +20,7 @@ import core.model.node.SceneNode;
 
 public class JinkIO {
 
-	private static final short VERSION_ID = 3;
+	private static final short VERSION_ID = 4;
 	private static final boolean IGNORE_ERRORS = false;
 	private static final boolean VERBOSE = false;
 

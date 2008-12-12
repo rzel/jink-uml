@@ -198,10 +198,6 @@ public class MainDrawnArea extends JComponent {
 			x += panX;
 			y += panY;
 			boolean clickedDragger = selected != null && clickedDragger(x, y);
-			if (snapToGrid) {
-				x = x / GRID_SIZE * GRID_SIZE;
-				y = y / GRID_SIZE * GRID_SIZE;
-			}
 			mouseX = x;
 			mouseY = y;
 			int button = e.getButton();
@@ -223,6 +219,10 @@ public class MainDrawnArea extends JComponent {
 				if (dragging == null) {
 					selected = controller.getModel().getNodeAt(x, y);
 					if (selected != null) {
+						if (snapToGrid) {
+							x = x / GRID_SIZE * GRID_SIZE;
+							y = y / GRID_SIZE * GRID_SIZE;
+						}
 						offX = selected.getX() + selected.getWidth() / 2 - x;
 						offY = selected.getY() + selected.getHeight() / 2 - y;
 						dragging = selected;
