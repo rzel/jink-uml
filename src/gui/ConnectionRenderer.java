@@ -4,7 +4,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.RenderingHints;
 import java.awt.Stroke;
 
 import core.model.node.SceneNode;
@@ -22,8 +21,8 @@ public class ConnectionRenderer {
 			render(g, b, a, false);
 			return;
 		}
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
+		//g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+		//			RenderingHints.VALUE_ANTIALIAS_ON);
 		int acx = a.getX() + a.getWidth() / 2, acy = a.getY() + a.getHeight()
 				/ 2;
 		int bcx = b.getX() + b.getWidth() / 2, bcy = b.getY() + b.getHeight()
