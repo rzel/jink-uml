@@ -55,7 +55,7 @@ public class MainDrawnArea extends JComponent {
 
 	@Override
 	protected void paintComponent(Graphics gg) {
-		long start = System.nanoTime();
+		//long start = System.nanoTime();
 		Graphics2D g = (Graphics2D) gg;
 		int w = getWidth(), h = getHeight();
 		g.setColor(Color.white);
@@ -108,10 +108,10 @@ public class MainDrawnArea extends JComponent {
 				}
 			}
 		}
-		long end = System.nanoTime();
-		long elapsed = end - start;
-		double milli = 1.0 * elapsed / 1000000;
-		System.out.println(milli + " milliseconds");
+		//long end = System.nanoTime();
+		//long elapsed = end - start;
+		//double milli = 1.0 * elapsed / 1000000;
+		//System.out.println(milli + " milliseconds");
 	}
 
 	private final MouseAdapter adapter = new MouseAdapter() {
