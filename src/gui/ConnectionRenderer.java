@@ -11,9 +11,9 @@ import core.model.node.SceneNode;
 
 public class ConnectionRenderer {
 
-	private final Stroke lineStroke = new BasicStroke(5.0f,
-			BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-	private final Color strokeColor = new Color(0, 0, 0, 200);
+	private final Stroke lineStroke = new BasicStroke(5.0f);
+	//BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+	private final Color strokeColor = new Color(50, 50, 50);
 
 	public void render(Graphics2D g, SceneNode a, SceneNode b, boolean ordered) {
 		if (a.getBounds().intersects(b.getBounds()))
@@ -102,13 +102,15 @@ public class ConnectionRenderer {
 			drawArrow(g, (int) xx, (int) yy, (int) x, (int) y);
 	}
 
+	int[] xPoints = new int[3];
+	int[] yPoints = new int[3];
+	float[] vecLine = new float[2];
+	float[] vecLeft = new float[2];
+
 	private void drawArrow(Graphics2D g, int x, int y, int xx, int yy) {
 		float arrowWidth = 15.0f;
 		float theta = 0.623f;
-		int[] xPoints = new int[3];
-		int[] yPoints = new int[3];
-		float[] vecLine = new float[2];
-		float[] vecLeft = new float[2];
+
 		float fLength;
 		float th;
 		float ta;
@@ -145,20 +147,29 @@ public class ConnectionRenderer {
 		g.fillPolygon(xPoints, yPoints, 3);
 	}
 
+	Point rightPoint = new Point(), topPoint = new Point(),
+			bottomPoint = new Point(), leftPoint = new Point();
+
 	private Point getRight(SceneNode a) {
-		return new Point(a.getX() + a.getWidth(), a.getY() + a.getHeight() / 2);
+		rightPoint.setLocation(a.getX() + a.getWidth(), a.getY()
+				+ a.getHeight() / 2);
+		return rightPoint;
 	}
 
 	private Point getTop(SceneNode a) {
-		return new Point(a.getX() + a.getWidth() / 2, a.getY());
+		topPoint.setLocation(a.getX() + a.getWidth() / 2, a.getY());
+		return topPoint;
 	}
 
 	private Point getBottom(SceneNode a) {
-		return new Point(a.getX() + a.getWidth() / 2, a.getY() + a.getHeight());
+		bottomPoint.setLocation(a.getX() + a.getWidth() / 2, a.getY()
+				+ a.getHeight());
+		return bottomPoint;
 	}
 
 	private Point getLeft(SceneNode a) {
-		return new Point(a.getX(), a.getY() + a.getHeight() / 2);
+		leftPoint.setLocation(a.getX(), a.getY() + a.getHeight() / 2);
+		return leftPoint;
 	}
 
 }

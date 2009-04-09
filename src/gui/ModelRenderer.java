@@ -21,7 +21,7 @@ public class ModelRenderer {
 	private static final Font font = new Font("Arial", Font.PLAIN, 14);
 	private static final Color inner_fill = new Color(240, 240, 255),
 			outer_border = Color.black, title_color = Color.black,
-			grid_color = new Color(0, 0, 0, 50), dividor_color = Color.black;
+			grid_color = new Color(200, 200, 200), dividor_color = Color.black;
 	private static final int GRID_SIZE = 20;
 	public static boolean SHOW_GLIMPSES = true;
 	protected UMLModel model;
