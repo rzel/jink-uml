@@ -17,6 +17,7 @@ import javax.swing.event.ListSelectionListener;
 
 import util.JinkFileFilter;
 import util.Settings;
+import core.Instructions;
 import core.JavaJinkDocument;
 import core.Jink;
 import core.JinkDocument;
@@ -165,4 +166,8 @@ public class JinkGUI extends JinkGUI_Beans implements ListSelectionListener {
 		controller.getCurrentDocument().getMainRenderedPanel().repaint();
 	}
 
+	@Override
+	protected void showInstructions() {
+		Instructions.showInstructions();
+	}
 }

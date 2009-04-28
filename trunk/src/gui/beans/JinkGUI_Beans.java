@@ -1,6 +1,6 @@
 /*
  * JinkFrame.java
- *
+ * 
  * Created on December 7, 2008, 12:37 AM
  */
 
@@ -32,6 +32,8 @@ public abstract class JinkGUI_Beans extends javax.swing.JFrame {
 	protected abstract void setShowGlimpse(boolean b);
 
 	protected abstract void showAbout();
+
+	protected abstract void showInstructions();
 
 	protected abstract DefaultListModel getStackModel();
 
@@ -66,6 +68,7 @@ public abstract class JinkGUI_Beans extends javax.swing.JFrame {
 		alignGridMenuItem = new javax.swing.JCheckBoxMenuItem();
 		showGlimpseMenuItem = new javax.swing.JCheckBoxMenuItem();
 		jMenu2 = new javax.swing.JMenu();
+		jMenuItem1 = new javax.swing.JMenuItem();
 		aboutMenuItem = new javax.swing.JMenuItem();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -258,6 +261,14 @@ public abstract class JinkGUI_Beans extends javax.swing.JFrame {
 
 		jMenu2.setText("Help");
 
+		jMenuItem1.setText("Instructions");
+		jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jMenuItem1ActionPerformed(evt);
+			}
+		});
+		jMenu2.add(jMenuItem1);
+
 		aboutMenuItem.setText("About");
 		aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -318,6 +329,10 @@ public abstract class JinkGUI_Beans extends javax.swing.JFrame {
 		setShowGlimpse(showGlimpseMenuItem.isSelected());
 	}
 
+	private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
+		showInstructions();
+	}
+
 	// Variables declaration - do not modify
 	protected javax.swing.JMenuItem aboutMenuItem;
 	protected javax.swing.JCheckBoxMenuItem alignGridMenuItem;
@@ -327,6 +342,7 @@ public abstract class JinkGUI_Beans extends javax.swing.JFrame {
 	protected javax.swing.JMenu jMenu2;
 	protected javax.swing.JMenu jMenu3;
 	protected javax.swing.JMenuBar jMenuBar1;
+	protected javax.swing.JMenuItem jMenuItem1;
 	protected javax.swing.JPanel jPanel1;
 	protected javax.swing.JPanel jPanel2;
 	protected javax.swing.JPanel jPanel3;
